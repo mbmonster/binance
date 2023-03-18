@@ -27,7 +27,7 @@ function Home() {
                         <span style={{ fontSize: '34px', color: '#fd377e' }}>Bi</span>
                         <span style={{ fontSize: '34px', color: 'white' }}>nance</span>
                     </div>
-                    <h1 style={{ color: 'white' }}>Tập trung kiểm soát tài chính của bạnaaaa</h1>
+                    <h1 style={{ color: 'white' }}>Tập trung kiểm soát tài chính của bạn</h1>
                     <p style={{ color: 'white' }}>Nhanh chóng và an toàn</p>
                 </div>
                 <Col lg="5" md="7">
