@@ -1,15 +1,23 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
-import HomePage from './components/HomePage/index.js';
+import HomePage from './components/Pages/Homepage';
 import routers from './routes';
 function App() {
+    const { user } = useSelector((state) => state.user);
+    let pages = routers;
+
+    if (!user) {
+        pages = routers.filter((row) => row.isShow !== true);
+    }
+
     return (
         <BrowserRouter>
             <Routes>
-                {routers.map((rou, index) => {
+                {pages.map((rou, index) => {
                     const Page = rou.component;
                     let Layout = Fragment;
                     if (rou.layout) {

@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
     Button,
     Card,
-    CardHeader,
     CardBody,
     FormGroup,
     Form,
@@ -15,61 +16,42 @@ import {
     Col,
 } from 'reactstrap';
 import styles from './homepage.module.scss';
+import { loginUser } from '../../features/userSlice';
 
 const cx = classnames.bind(styles);
 
 function Home() {
+    const [email, SetEmail] = useState('');
+    const [password, SetPassword] = useState('');
+    const { user } = useSelector((state) => state.user);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (user) {
+            navigate('/admin');
+        }
+    }, [user]);
+
     return (
         <div className={cx('homePage')}>
-            <div style={{ alignItems: 'center', display: 'flex', width: '1033px' }}>
-                <div className={cx('content')}>
-                    <div>
+            <div className={cx('main')} style={{ alignItems: 'center', display: 'flex', width: '1033px' }}>
+                <div>
+                    <div className={cx('title')}>
                         <span style={{ fontSize: '34px', color: '#fd377e' }}>Bi</span>
                         <span style={{ fontSize: '34px', color: 'white' }}>nance</span>
                     </div>
-                    <h1 style={{ color: 'white' }}>Tập trung kiểm soát tài chính của bạn</h1>
-                    <p style={{ color: 'white' }}>Nhanh chóng và an toàn</p>
+                    <h1 className={cx('content')} style={{ color: 'white' }}>
+                        Tập trung kiểm soát tài chính của bạn
+                    </h1>
+                    <p style={{ color: 'white', fontWeight: '400' }}>Nhanh chóng và an toàn</p>
                 </div>
                 <Col lg="5" md="7">
                     <Card className="bg-secondary shadow border-0">
-                        <CardHeader className="bg-transparent pb-5">
-                            <div className="text-muted text-center mt-2 mb-3">
-                                <small>Sign in with</small>
-                            </div>
-                            <div className="btn-wrapper text-center">
-                                <Button
-                                    className="btn-neutral btn-icon"
-                                    color="default"
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
-                                >
-                                    <span className="btn-inner--icon">
-                                        <img
-                                            alt="..."
-                                            src={require('../../assets/img/icons/common/github.svg').default}
-                                        />
-                                    </span>
-                                    <span className="btn-inner--text">Github</span>
-                                </Button>
-                                <Button
-                                    className="btn-neutral btn-icon"
-                                    color="default"
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
-                                >
-                                    <span className="btn-inner--icon">
-                                        <img
-                                            alt="..."
-                                            src={require('../../assets/img/icons/common/google.svg').default}
-                                        />
-                                    </span>
-                                    <span className="btn-inner--text">Google</span>
-                                </Button>
-                            </div>
-                        </CardHeader>
                         <CardBody className="px-lg-5 py-lg-5">
                             <div className="text-center text-muted mb-4">
-                                <small>Or sign in with credentials</small>
+                                <small>Sign in with credentials</small>
                             </div>
                             <Form role="form">
                                 <FormGroup className="mb-3">
@@ -79,7 +61,12 @@ function Home() {
                                                 <i className="ni ni-email-83" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Email Or Username" type="email" autoComplete="new-email" />
+                                        <Input
+                                            placeholder="Email Or Username"
+                                            type="email"
+                                            autoComplete="new-email"
+                                            onChange={(e) => SetEmail(e.target.value)}
+                                        />
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup>
@@ -89,7 +76,12 @@ function Home() {
                                                 <i className="ni ni-lock-circle-open" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Password" type="password" autoComplete="new-password" />
+                                        <Input
+                                            placeholder="Password"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            onChange={(e) => SetPassword(e.target.value)}
+                                        />
                                     </InputGroup>
                                 </FormGroup>
                                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -99,7 +91,14 @@ function Home() {
                                     </label>
                                 </div>
                                 <div className="text-center">
-                                    <Button className="my-4" color="primary" type="button">
+                                    <Button
+                                        className="my-4"
+                                        color="primary"
+                                        type="button"
+                                        onClick={() => {
+                                            dispatch(loginUser({ email, password }));
+                                        }}
+                                    >
                                         Sign in
                                     </Button>
                                 </div>

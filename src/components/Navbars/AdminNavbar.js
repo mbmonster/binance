@@ -1,4 +1,8 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 // reactstrap components
 import {
     DropdownMenu,
@@ -16,8 +20,17 @@ import {
     Container,
     Media,
 } from 'reactstrap';
+import { logOut } from '../../features/userSlice';
 
 const AdminNavbar = (props) => {
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!user) {
+            navigate('/home');
+        }
+    }, [user]);
     return (
         <>
             <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -45,7 +58,9 @@ const AdminNavbar = (props) => {
                                         <img alt="..." src={require('../../assets/img/theme/team-4-800x800.jpg')} />
                                     </span>
                                     <Media className="ml-2 d-none d-lg-block">
-                                        <span className="mb-0 text-sm font-weight-bold">Jessica Jones</span>
+                                        <span className="mb-0 text-sm font-weight-bold">
+                                            {user && user.providerData[0].displayName}
+                                        </span>
                                     </Media>
                                 </Media>
                             </DropdownToggle>
@@ -72,7 +87,14 @@ const AdminNavbar = (props) => {
                                 <DropdownItem divider />
                                 <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
                                     <i className="ni ni-user-run" />
-                                    <span>Logout</span>
+                                    <span
+                                        onClick={() => {
+                                            dispatch(logOut());
+                                            navigate('/home');
+                                        }}
+                                    >
+                                        Logout
+                                    </span>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>

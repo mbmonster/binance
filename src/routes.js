@@ -6,7 +6,7 @@ import Login from 'views/examples/Login.js';
 import Tables from 'views/examples/Tables.js';
 import Icons from 'views/examples/Icons.js';
 
-import HomePage from './components/HomePage';
+import HomePage from './components/Pages/Homepage';
 import AdminLayout from './layouts/Admin';
 import AuthLayout from './layouts/Auth';
 
