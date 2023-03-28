@@ -5,6 +5,7 @@ import Register from 'views/examples/Register.js';
 import Login from 'views/examples/Login.js';
 import Tables from 'views/examples/Tables.js';
 import Icons from 'views/examples/Icons.js';
+import Daily from 'views/Daily.js';
 
 import HomePage from './components/Pages/Homepage';
 import AdminLayout from './layouts/Admin';
@@ -20,17 +21,17 @@ var routes = [
     },
     {
         path: '/admin',
-        name: 'Dashboard',
+        name: 'Trang chủ',
         icon: 'ni ni-tv-2 text-primary',
         component: Index,
         layout: AdminLayout,
         isShow: true,
     },
     {
-        path: '/icons',
-        name: 'Icons',
+        path: '/daily',
+        name: 'Chi tiêu trong ngày',
         icon: 'ni ni-planet text-blue',
-        component: Icons,
+        component: Daily,
         layout: AdminLayout,
         isShow: true,
     },
@@ -56,22 +57,6 @@ var routes = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: Tables,
         layout: AdminLayout,
-        isShow: true,
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        icon: 'ni ni-key-25 text-info',
-        component: Login,
-        layout: AuthLayout,
-        isShow: true,
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        icon: 'ni ni-circle-08 text-pink',
-        component: Register,
-        layout: AuthLayout,
         isShow: true,
     },
 ];

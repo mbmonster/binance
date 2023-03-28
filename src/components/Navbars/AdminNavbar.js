@@ -90,7 +90,6 @@ const AdminNavbar = (props) => {
                                     <span
                                         onClick={() => {
                                             dispatch(logOut());
-                                            navigate('/home');
                                         }}
                                     >
                                         Logout

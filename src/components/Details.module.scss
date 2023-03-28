@@ -1,0 +1,25 @@
+.card-detail {
+    height: 540px !important;
+    overflow: auto;
+}
+
+*::-webkit-scrollbar {
+    width: 16px;
+    background-color: transparent;
+}
+
+*::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #959393;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+}
+
+.btn-delete {
+    :hover {
+        cursor: pointer;
+    }
+}

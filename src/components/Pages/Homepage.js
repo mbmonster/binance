@@ -23,6 +23,7 @@ const cx = classnames.bind(styles);
 function Home() {
     const [email, SetEmail] = useState('');
     const [password, SetPassword] = useState('');
+    const [remember, SetRemember] = useState(false);
     const { user } = useSelector((state) => state.user);
 
     const navigate = useNavigate();
@@ -85,7 +86,14 @@ function Home() {
                                     </InputGroup>
                                 </FormGroup>
                                 <div className="custom-control custom-control-alternative custom-checkbox">
-                                    <input className="custom-control-input" id="customCheckLogin" type="checkbox" />
+                                    <input
+                                        className="custom-control-input"
+                                        id="customCheckLogin"
+                                        type="checkbox"
+                                        onChange={(e) => {
+                                            SetRemember(e.target.checked);
+                                        }}
+                                    />
                                     <label className="custom-control-label" htmlFor="customCheckLogin">
                                         <span className="text-muted">Remember me</span>
                                     </label>
@@ -96,7 +104,7 @@ function Home() {
                                         color="primary"
                                         type="button"
                                         onClick={() => {
-                                            dispatch(loginUser({ email, password }));
+                                            dispatch(loginUser({ email, password, remember }));
                                         }}
                                     >
                                         Sign in

@@ -3,16 +3,15 @@ import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth';
 
 import { auth } from '../configs/firebase';
-import { async } from '@firebase/util';
-
-const addUserToLocalStorage = (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-};
 
 const getUserFromLocalStorage = () => {
     const result = localStorage.getItem('user');
     const user = result ? JSON.parse(result) : null;
     return user;
+};
+
+const addUserToLocalStorage = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
 };
 
 const removeUserFromLocalStorage = () => {
@@ -26,9 +25,9 @@ const initialState = {
 
 export const loginUser = createAsyncThunk('users/login', async (user, thunkAPI) => {
     try {
-        const { email, password } = user;
+        const { email, password, remember } = user;
         const res = await signInWithEmailAndPassword(auth, email, password);
-        return res;
+        return { ...res, remember };
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
     }
@@ -54,11 +53,10 @@ const userSlice = createSlice({
         [loginUser.fulfilled]: (state, { payload }) => {
             state.isLoading = false;
             state.user = payload.user;
-
             if (payload.user.displayName == null) {
                 let displayName = 'Ngọc Hòa';
                 if (payload.user.email !== 'hoa1881992@gmail.com') {
-                    displayName = 'Thùy Vân';
+                    displayName = 'Admin';
                 }
                 updateProfile(auth.currentUser, {
                     displayName: displayName,
@@ -76,6 +74,7 @@ const userSlice = createSlice({
         [logOut.fulfilled]: (state, { payload }) => {
             state.isLoading = false;
             removeUserFromLocalStorage();
+            window.location.href = '/';
         },
         [logOut.rejected]: (state) => {
             state.isLoading = false;

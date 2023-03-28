@@ -1,0 +1,67 @@
+[
+    {
+        "day": "22032023",
+        "items": [
+            {
+                "type": "ăn sáng",
+                "amount": 1000,
+                "kind": "Chi"
+            },
+            {
+                "type": "ăn trưa",
+                "amount": 2000,
+                "kind": "Chi"
+            },
+            {
+                "type": "ăn tối",
+                "amount": 2000,
+                "kind": "Chi"
+            }
+        ]
+    },
+    {
+        "day": "23032023",
+        "items": [
+            {
+                "type": "ăn trưa",
+                "amount": 1000,
+                "kind": "thu"
+            },
+            {
+                "type": "ăn tối",
+                "amount": 2000,
+                "kind": "Chi"
+            },
+            {
+                "type": "ăn trưa",
+                "amount": 1000,
+                "kind": "thu"
+            },
+            {
+                "type": "ăn tối",
+                "amount": 2000,
+                "kind": "Chi"
+            },
+            {
+                "type": "ăn trưa",
+                "amount": 1000,
+                "kind": "thu"
+            },
+            {
+                "type": "ăn tối",
+                "amount": 2000,
+                "kind": "Chi"
+            },
+            {
+                "type": "ăn trưa",
+                "amount": 1000,
+                "kind": "thu"
+            },
+            {
+                "type": "ăn tối",
+                "amount": 2000,
+                "kind": "Chi"
+            }
+        ]
+    }
+]
