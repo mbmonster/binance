@@ -1,9 +1,43 @@
+import { useEffect, useState, useMemo } from 'react';
 import { Card, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
 import { useSelector } from 'react-redux';
+import { BsCalendar2Date, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs';
+import { flatMap, get, partition, sumBy } from 'lodash';
+
+import { vnd } from '../../Helpers/Index';
+import { Loading } from '../../assets/svg';
+import { isBreakStatement } from 'typescript';
 
 const Header = () => {
-    const { allMonth, allWeek } = useSelector((state) => state.data);
-    console.log(allMonth, allWeek);
+    const { allMonth, allWeek, allDailys, isLoadingAll } = useSelector((state) => state.data);
+
+    const totalAmount = ({ time, kind }) => {
+        if (!isLoadingAll) {
+            let arrData;
+            switch (time) {
+                case 'date':
+                    arrData = allDailys.items;
+                    break;
+                case 'week':
+                    arrData = flatMap(allWeek, (obj) => get(obj, 'items', []));
+
+                    break;
+                case 'month':
+                    arrData = flatMap(allMonth, (obj) => get(obj, 'items', []));
+                    break;
+                default:
+                    break;
+            }
+            const data = partition(arrData, function (item) {
+                return item.kind === 'Thu';
+            });
+
+            return sumBy(data[kind], function (o) {
+                return Number(o.amount);
+            });
+        }
+    };
+
     return (
         <>
             <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -11,103 +45,132 @@ const Header = () => {
                     <div className="header-body">
                         {/* Card stats */}
                         <Row>
-                            <Col lg="6" xl="3">
+                            <Col lg="6" xl="4">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardBody>
                                         <Row>
-                                            <div className="col">
-                                                <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
-                                                    Traffic
-                                                </CardTitle>
-                                                <span className="h2 font-weight-bold mb-0">350,897</span>
-                                            </div>
-                                            <Col className="col-auto">
-                                                <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                                                    <i className="fas fa-chart-bar" />
-                                                </div>
-                                            </Col>
+                                            <CardTitle tag="h4" className="text-uppercase mb-3">
+                                                trong ngày
+                                            </CardTitle>
                                         </Row>
-                                        <p className="mt-3 mb-0 text-muted text-sm">
-                                            <span className="text-success mr-2">
-                                                <i className="fa fa-arrow-up" /> 3.48%
-                                            </span>{' '}
-                                            <span className="text-nowrap">Since last month</span>
-                                        </p>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardBody>
+
                                         <Row>
                                             <div className="col">
                                                 <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
-                                                    New users
+                                                    Tổng chi
                                                 </CardTitle>
-                                                <span className="h2 font-weight-bold mb-0">2,356</span>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'date', kind: 1 }))
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <div className="col">
+                                                <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
+                                                    Tổng thu
+                                                </CardTitle>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'date', kind: 0 }))
+                                                    )}
+                                                </span>
                                             </div>
                                             <Col className="col-auto">
                                                 <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                                    <i className="fas fa-chart-pie" />
+                                                    <BsCalendar2Date />
                                                 </div>
                                             </Col>
                                         </Row>
-                                        <p className="mt-3 mb-0 text-muted text-sm">
-                                            <span className="text-danger mr-2">
-                                                <i className="fas fa-arrow-down" /> 3.48%
-                                            </span>{' '}
-                                            <span className="text-nowrap">Since last week</span>
-                                        </p>
                                     </CardBody>
                                 </Card>
                             </Col>
-                            <Col lg="6" xl="3">
+                            <Col lg="6" xl="4">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardBody>
                                         <Row>
+                                            <CardTitle tag="h4" className="text-uppercase mb-3">
+                                                trong tuần
+                                            </CardTitle>
+                                        </Row>
+
+                                        <Row>
                                             <div className="col">
                                                 <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
-                                                    Sales
+                                                    Tổng chi
                                                 </CardTitle>
-                                                <span className="h2 font-weight-bold mb-0">924</span>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'week', kind: 1 }))
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <div className="col">
+                                                <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
+                                                    Tổng thu
+                                                </CardTitle>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'week', kind: 0 }))
+                                                    )}
+                                                </span>
                                             </div>
                                             <Col className="col-auto">
-                                                <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                                                    <i className="fas fa-users" />
+                                                <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                                    <BsCalendar2Week />
                                                 </div>
                                             </Col>
                                         </Row>
-                                        <p className="mt-3 mb-0 text-muted text-sm">
-                                            <span className="text-warning mr-2">
-                                                <i className="fas fa-arrow-down" /> 1.10%
-                                            </span>{' '}
-                                            <span className="text-nowrap">Since yesterday</span>
-                                        </p>
                                     </CardBody>
                                 </Card>
                             </Col>
-                            <Col lg="6" xl="3">
+                            <Col lg="6" xl="4">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardBody>
                                         <Row>
+                                            <CardTitle tag="h4" className="text-uppercase mb-3">
+                                                trong tháng
+                                            </CardTitle>
+                                        </Row>
+
+                                        <Row>
                                             <div className="col">
                                                 <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
-                                                    Performance
+                                                    Tổng chi
                                                 </CardTitle>
-                                                <span className="h2 font-weight-bold mb-0">49,65%</span>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'week', kind: 1 }))
+                                                    )}
+                                                </span>
+                                            </div>
+                                            <div className="col">
+                                                <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
+                                                    Tổng thu
+                                                </CardTitle>
+                                                <span className="h2 font-weight-bold mb-0">
+                                                    {isLoadingAll ? (
+                                                        <Loading height={20} />
+                                                    ) : (
+                                                        vnd.format(totalAmount({ time: 'month', kind: 0 }))
+                                                    )}
+                                                </span>
                                             </div>
                                             <Col className="col-auto">
-                                                <div className="icon icon-shape bg-info text-white rounded-circle shadow">
-                                                    <i className="fas fa-percent" />
+                                                <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                                    <BsCalendar2Month />
                                                 </div>
                                             </Col>
                                         </Row>
-                                        <p className="mt-3 mb-0 text-muted text-sm">
-                                            <span className="text-success mr-2">
-                                                <i className="fas fa-arrow-up" /> 12%
-                                            </span>{' '}
-                                            <span className="text-nowrap">Since last month</span>
-                                        </p>
                                     </CardBody>
                                 </Card>
                             </Col>

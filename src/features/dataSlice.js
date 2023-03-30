@@ -11,7 +11,6 @@ import {
     query,
     setDoc,
     updateDoc,
-    where,
 } from 'firebase/firestore';
 
 import { db } from '../configs/firebase';
@@ -21,7 +20,9 @@ const initialState = {
     dailys: [],
     allMonth: [],
     allWeek: [],
+    allDailys: {},
     createDate: '',
+    isLoadingAll: true,
 };
 
 export const getAllDailys = createAsyncThunk('daily/getAll', async (product, thunkAPI) => {
@@ -32,9 +33,11 @@ export const getAllDailys = createAsyncThunk('daily/getAll', async (product, thu
         const startOfWeek = moment().utc().startOf('isoWeek').format('YYYYMMDD');
         const endOfWeek = moment().utc().endOf('isoWeek').format('YYYYMMDD');
 
+        const currentDate = moment().format('YYYYMMDD');
         const q = query(collection(db, 'dailys'));
         let arrDataMonth = [];
         let arrDataWeek = [];
+        let arrDataDaily = [];
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
@@ -48,8 +51,12 @@ export const getAllDailys = createAsyncThunk('daily/getAll', async (product, thu
             if (doc.id >= startOfWeek && doc.id <= endOfWeek) {
                 arrDataWeek.push(obj);
             }
+
+            if (doc.id === currentDate) {
+                arrDataDaily = obj;
+            }
         });
-        return { dataOfMonth: arrDataMonth, dataOfWeek: arrDataWeek };
+        return { dataOfMonth: arrDataMonth, dataOfWeek: arrDataWeek, dataOfDaily: arrDataDaily };
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
     }
@@ -66,6 +73,7 @@ export const addDaily = createAsyncThunk('daily/add', async (product, thunkAPI) 
                     amount: product.amount,
                     kind: product.kind,
                     createDate: newDatetime,
+                    parentId: newDate,
                 },
             ],
         };
@@ -86,7 +94,8 @@ export const addDaily = createAsyncThunk('daily/add', async (product, thunkAPI) 
                 }),
             });
         }
-        thunkAPI.dispatch(getDaily({ currentDate: product.currentDate }));
+        thunkAPI.dispatch(getDaily(product.currentDate));
+        thunkAPI.dispatch(getAllDailys());
         return obj;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -95,7 +104,7 @@ export const addDaily = createAsyncThunk('daily/add', async (product, thunkAPI) 
 
 export const getDaily = createAsyncThunk('daily/get', async (product, thunkAPI) => {
     try {
-        const newDate = moment(product.currentDate).format('YYYYMMDD');
+        const newDate = moment(product).format('YYYYMMDD');
         const docRef = doc(db, 'dailys', newDate);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -122,7 +131,7 @@ export const deleteDaily = createAsyncThunk('daily/delete', async (product, thun
         await updateDoc(docRef, {
             items: arrayRemove(obj),
         });
-        thunkAPI.dispatch(getDaily({ currentDate: product.currentDate }));
+        thunkAPI.dispatch(getDaily(product.currentDate));
         return obj;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -136,9 +145,12 @@ const dataSlice = createSlice({
     extraReducers: {
         [addDaily.pending]: (state) => {
             state.isLoading = true;
+            state.isLoadingAll = true;
         },
         [addDaily.fulfilled]: (state, { payload }) => {
             state.dailys = payload;
+            state.isLoadingAll = false;
+            state.isLoading = false;
             toast.success('Thêm mới thành công!');
         },
         [addDaily.rejected]: (state) => {
@@ -156,21 +168,25 @@ const dataSlice = createSlice({
         },
         [deleteDaily.pending]: (state) => {
             state.isLoading = true;
+            state.isLoadingAll = true;
         },
         [deleteDaily.fulfilled]: (state, { payload }) => {
             state.dailys = payload;
+            state.isLoadingAll = false;
+            state.isLoading = false;
             toast.success('Xóa thành công!');
         },
         [deleteDaily.rejected]: (state) => {
             toast.error('Xóa không thành công!');
         },
         [getAllDailys.pending]: (state) => {
-            state.isLoading = true;
+            state.isLoadingAll = true;
         },
         [getAllDailys.fulfilled]: (state, { payload }) => {
             state.allMonth = payload.dataOfMonth;
             state.allWeek = payload.dataOfWeek;
-            state.isLoading = false;
+            state.allDailys = payload.dataOfDaily;
+            state.isLoadingAll = false;
         },
         [getAllDailys.rejected]: (state) => {
             toast.error('Có lỗi xảy ra!');

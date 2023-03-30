@@ -20,7 +20,6 @@ function Daily() {
     const handleAdd = () => {
         dispatch(addDaily({ type, amount, kind, currentDate }));
     };
-
     useEffect(() => {
         if (
             type.length === 0 ||
@@ -37,7 +36,7 @@ function Daily() {
     }, [type, amount, kind, currentDate]);
 
     const handleChangeDate = (e) => {
-        setCurrentDate(e);
+        setCurrentDate(e.toDate());
     };
     return (
         <>

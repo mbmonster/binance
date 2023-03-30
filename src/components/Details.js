@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import classnames from 'classnames/bind';
 import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,8 @@ import { BiArchiveIn, BiArchiveOut, BiTrash } from 'react-icons/bi';
 import { getDaily, deleteDaily, getAllDailys } from '../features/dataSlice';
 import styles from './Details.module.scss';
 import { Timer } from '../assets/svg';
+import { vnd } from '../Helpers/Index';
+import { compact } from 'lodash';
 const cx = classnames.bind(styles);
 
 function Details({ currentDate }) {
@@ -15,20 +17,15 @@ function Details({ currentDate }) {
 
     useEffect(() => {
         dispatch(getDaily(currentDate));
-        dispatch(getAllDailys());
-    }, []);
-
-    if (isLoading || dailys.length === 0 || dailys.items.length === 0) {
+    }, [currentDate]);
+    const arr = compact(dailys.items);
+    if (isLoading || arr.length === 0) {
         return (
             <Card className={cx('card-detail')} style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Timer />
             </Card>
         );
     }
-    let vnd = Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    });
 
     const handleDelete = (data) => {
         const obj = {
@@ -89,4 +86,4 @@ function Details({ currentDate }) {
     );
 }
 
-export default Details;
+export default memo(Details);

@@ -1,7 +1,10 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, Route, Routes, Navigate } from 'react-router-dom';
 // reactstrap components
 import { Container } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+
+import { getAllDailys } from '../features/dataSlice';
 // core components
 import AdminNavbar from 'components/Navbars/AdminNavbar.js';
 import AdminFooter from 'components/Footers/AdminFooter.js';
@@ -10,10 +13,16 @@ import Sidebar from 'components/Sidebar/Sidebar.js';
 import routes from 'routes.js';
 
 const Admin = ({ children }) => {
-    const mainContent = React.useRef(null);
+    const dispatch = useDispatch();
+
+    const mainContent = useRef(null);
     const location = useLocation();
 
-    React.useEffect(() => {
+    useEffect(() => {
+        dispatch(getAllDailys());
+    }, []);
+
+    useEffect(() => {
         document.documentElement.scrollTop = 0;
         document.scrollingElement.scrollTop = 0;
         mainContent.current.scrollTop = 0;
