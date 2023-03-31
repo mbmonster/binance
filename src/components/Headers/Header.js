@@ -149,7 +149,7 @@ const Header = () => {
                                                     {isLoadingAll ? (
                                                         <Loading height={20} />
                                                     ) : (
-                                                        vnd.format(totalAmount({ time: 'week', kind: 1 }))
+                                                        vnd.format(totalAmount({ time: 'month', kind: 1 }))
                                                     )}
                                                 </span>
                                             </div>

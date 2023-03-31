@@ -6,14 +6,18 @@ import {
     arrayUnion,
     collection,
     doc,
+    documentId,
     getDoc,
     getDocs,
+    or,
     query,
     setDoc,
     updateDoc,
+    where,
 } from 'firebase/firestore';
 
 import { db } from '../configs/firebase';
+import { chunk, times } from 'lodash';
 
 const initialState = {
     isLoading: true,
@@ -34,7 +38,11 @@ export const getAllDailys = createAsyncThunk('daily/getAll', async (product, thu
         const endOfWeek = moment().utc().endOf('isoWeek').format('YYYYMMDD');
 
         const currentDate = moment().format('YYYYMMDD');
-        const q = query(collection(db, 'dailys'));
+
+        const q = query(
+            collection(db, 'dailys'),
+            or(where(documentId(), '>=', startOfMonth), where(documentId(), '<=', endOfMonth)),
+        );
         let arrDataMonth = [];
         let arrDataWeek = [];
         let arrDataDaily = [];
@@ -132,6 +140,7 @@ export const deleteDaily = createAsyncThunk('daily/delete', async (product, thun
             items: arrayRemove(obj),
         });
         thunkAPI.dispatch(getDaily(product.currentDate));
+        thunkAPI.dispatch(getAllDailys());
         return obj;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);

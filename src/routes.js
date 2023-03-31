@@ -1,15 +1,12 @@
 import Index from 'views/Index.js';
 import Profile from 'views/examples/Profile.js';
 import Maps from 'views/examples/Maps.js';
-import Register from 'views/examples/Register.js';
-import Login from 'views/examples/Login.js';
 import Tables from 'views/examples/Tables.js';
-import Icons from 'views/examples/Icons.js';
 import Daily from 'views/Daily.js';
+import Installment from 'views/Installment';
 
 import HomePage from './components/Pages/Homepage';
 import AdminLayout from './layouts/Admin';
-import AuthLayout from './layouts/Auth';
 
 var routes = [
     {
@@ -30,16 +27,16 @@ var routes = [
     {
         path: '/daily',
         name: 'Chi tiêu trong ngày',
-        icon: 'ni ni-planet text-blue',
+        icon: 'ni ni-calendar-grid-58 text-blue',
         component: Daily,
         layout: AdminLayout,
         isShow: true,
     },
     {
-        path: '/maps',
-        name: 'Maps',
-        icon: 'ni ni-pin-3 text-orange',
-        component: Maps,
+        path: '/installment',
+        name: 'Trả góp',
+        icon: 'ni ni-box-2 text-orange',
+        component: Installment,
         layout: AdminLayout,
         isShow: true,
     },

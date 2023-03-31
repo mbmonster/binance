@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import Header from 'components/Headers/Header.js';
 import { Button, Card, CardBody, Col, Container, FormGroup, Input, Row } from 'reactstrap';
-import classnames from 'classnames/bind';
 import { useDispatch } from 'react-redux';
 import Datetime from 'react-datetime';
 import CurrencyInput from 'react-currency-input-field';
@@ -9,7 +8,6 @@ import CurrencyInput from 'react-currency-input-field';
 import { addDaily } from '../features/dataSlice';
 import Details from '../components/Details';
 
-const cx = classnames.bind('');
 function Daily() {
     const [type, setType] = useState('');
     const [amount, setAmount] = useState('0');
