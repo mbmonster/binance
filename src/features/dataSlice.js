@@ -17,7 +17,6 @@ import {
 } from 'firebase/firestore';
 
 import { db } from '../configs/firebase';
-import { chunk, times } from 'lodash';
 
 const initialState = {
     isLoading: true,
