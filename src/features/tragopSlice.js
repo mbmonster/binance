@@ -6,7 +6,7 @@ import { db } from '../configs/firebase';
 
 const initialState = {
     isLoading: true,
-    dailys: [],
+    tragop: [],
     allMonth: [],
     allWeek: [],
     allDailys: {},
@@ -17,10 +17,17 @@ const initialState = {
 export const getAllTragop = createAsyncThunk('tragop/getAll', async (product, thunkAPI) => {
     try {
         const querySnapshot = await getDocs(collection(db, 'tragop'));
+        let arrData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, ' => ', doc.data());
+            const obj = {
+                id: doc.id,
+                ...doc.data(),
+            };
+            arrData.push(obj);
         });
+
+        return arrData;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
     }
@@ -29,18 +36,12 @@ export const getAllTragop = createAsyncThunk('tragop/getAll', async (product, th
 export const addTragop = createAsyncThunk('tragop/add', async (product, thunkAPI) => {
     try {
         const obj = {
-            title: product.title,
-            items: [
-                {
-                    month: product.month,
-                    amount: product.amount,
-                },
-            ],
+            title: product,
+            items: [],
         };
 
-        const objRef = doc(db, 'tragop');
+        const objRef = doc(collection(db, 'tragop'));
         setDoc(objRef, obj);
-
         return obj;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -52,10 +53,27 @@ const tragopSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: {
-        [getAllTragop.pending]: (state) => {},
-        [getAllTragop.fulfilled]: (state, { payload }) => {},
+        [getAllTragop.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [getAllTragop.fulfilled]: (state, { payload }) => {
+            state.isLoading = false;
+            state.tragop = payload;
+        },
         [getAllTragop.rejected]: (state) => {
+            state.isLoading = true;
+        },
+        [addTragop.pending]: (state) => {
+            state.isLoading = true;
+        },
+        [addTragop.fulfilled]: (state, { payload }) => {
+            toast.success('Thêm mới thành công!');
+            state.isLoading = false;
+            state.tragop = payload;
+        },
+        [addTragop.rejected]: (state) => {
             toast.error('Thêm mới không thành công!');
+            state.isLoading = true;
         },
     },
 });

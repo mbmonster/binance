@@ -3,12 +3,12 @@ import classnames from 'classnames/bind';
 import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiArchiveIn, BiArchiveOut, BiTrash } from 'react-icons/bi';
+import { compact } from 'lodash';
 
-import { getDaily, deleteDaily, getAllDailys } from '../features/dataSlice';
+import { getDaily, deleteDaily } from '../features/dataSlice';
 import styles from './Details.module.scss';
 import { Timer } from '../assets/svg';
 import { vnd } from '../Helpers/Index';
-import { compact } from 'lodash';
 const cx = classnames.bind(styles);
 
 function Details({ currentDate }) {
@@ -18,6 +18,7 @@ function Details({ currentDate }) {
     useEffect(() => {
         dispatch(getDaily(currentDate));
     }, [currentDate]);
+
     const arr = compact(dailys.items);
     if (isLoading || arr.length === 0) {
         return (

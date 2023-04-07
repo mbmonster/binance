@@ -61,12 +61,6 @@ function Daily() {
                                         <Col md="5">
                                             <FormGroup>
                                                 <h2 className="mb-0">Thành tiền</h2>
-                                                {/* <Input
-                                                    id="exampleFormControlInput1"
-                                                    type="number"
-                                                    value={amount}
-                                                    onChange={(e) => setAmount(e.target.value)}
-                                                /> */}
                                                 <CurrencyInput
                                                     placeholder="10.0000"
                                                     onValueChange={(value) => setAmount(value)}
