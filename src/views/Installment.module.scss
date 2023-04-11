@@ -1,0 +1,16 @@
+.card-custom {
+    transition: all 0.3s linear;
+    &:hover {
+        box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+        cursor: pointer;
+        transform: scale(1.02);
+    }
+}
+
+.btn-add-amount {
+    background-color: #2dce89;
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 2rem;
+    font-weight: 600;
+}

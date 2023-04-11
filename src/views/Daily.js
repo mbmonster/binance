@@ -62,7 +62,7 @@ function Daily() {
                                             <FormGroup>
                                                 <h2 className="mb-0">Thành tiền</h2>
                                                 <CurrencyInput
-                                                    placeholder="10.0000"
+                                                    placeholder="10.000"
                                                     onValueChange={(value) => setAmount(value)}
                                                     className="form-control"
                                                     suffix=" đ"

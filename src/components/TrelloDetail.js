@@ -5,10 +5,11 @@ import { BsFillCalendar2WeekFill } from 'react-icons/bs';
 
 import { vnd } from '../Helpers/Index';
 
-function TrelloDetail({ onHide, data }) {
+function TrelloDetail({ data }) {
     const [currentYear, setCurrentYear] = useState(new Date());
+    console.log(1);
     return (
-        <Col xl="3" hidden={onHide}>
+        <Col xl="3">
             <Card style={{ backgroundColor: '#ebecf0', alignItems: 'center' }}>
                 <Col xl="8">
                     <FormGroup style={{ margin: '1rem' }}>
