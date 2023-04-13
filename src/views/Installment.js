@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Header from 'components/Headers/Header';
 import { Button, Card, CardBody, Col, Container, FormGroup, Input, Modal, Row } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllTragop, addTragop } from 'features/tragopSlice';
 import classnames from 'classnames/bind';
 
@@ -20,15 +20,18 @@ function Installment() {
     const [showModal, setShowModal] = useState(false);
     const [month, setMonth] = useState('0');
     const [amount, setAmount] = useState('0');
-
+    const [isAddMonth, setIsAddMonth] = useState(false);
     useEffect(() => {
         dispatch(getAllTragop()).then((data) => {
             if (data.meta.requestStatus === 'fulfilled') {
                 setTraGop(data.payload);
             }
         });
-    }, []);
+    }, [isAddMonth]);
 
+    const handleReload = (data) => {
+        setIsAddMonth((state) => !state);
+    };
     useEffect(() => {
         if (title === '' || amount === '0' || amount === '' || month === '0' || month === '') {
             setDisabled(true);
@@ -50,7 +53,7 @@ function Installment() {
                 <Row>
                     {traGop.map((item, index) => (
                         <Col xl="3" className="pb-4" key={index}>
-                            <InstallmentNew data={item} />
+                            <InstallmentNew data={item} handleLoad={handleReload} />
                         </Col>
                     ))}
                 </Row>

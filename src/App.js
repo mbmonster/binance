@@ -2,6 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-vertical-timeline-component/style.min.css';
 import { useSelector } from 'react-redux';
 
 import HomePage from './components/Pages/Homepage';

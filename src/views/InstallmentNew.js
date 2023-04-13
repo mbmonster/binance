@@ -2,6 +2,18 @@ import { useEffect, useState } from 'react';
 import { sumBy } from 'lodash';
 import { Button, Card, CardBody, Col, FormGroup, Input, Modal, Progress, Row } from 'reactstrap';
 import { BsFillHeartPulseFill } from 'react-icons/bs';
+import {
+    TbNumber0,
+    TbNumber1,
+    TbNumber2,
+    TbNumber3,
+    TbNumber4,
+    TbNumber5,
+    TbNumber6,
+    TbNumber7,
+    TbNumber8,
+    TbNumber9,
+} from 'react-icons/tb';
 import classnames from 'classnames/bind';
 import Datetime from 'react-datetime';
 import CurrencyInput from 'react-currency-input-field';
@@ -9,12 +21,12 @@ import { useDispatch } from 'react-redux';
 
 import styles from './Installment.module.scss';
 import { vnd } from '../Helpers/Index';
-import TrelloDetail from '../components/TrelloDetail';
 import { addThangTragop } from '../features/tragopSlice';
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 
 const cx = classnames.bind(styles);
-function Installment({ data }) {
-    const [showModal, setShowModal] = useState(false);
+function Installment({ data, handleLoad = () => {} }) {
+    const [showModal, setShowModal] = useState();
     const [currentYear, setCurrentYear] = useState(new Date());
     const [amount, setAmount] = useState('0');
     const [disabled, setDisabled] = useState(true);
@@ -28,7 +40,7 @@ function Installment({ data }) {
         }
     }, [amount]);
     const calAmount = () => {
-        const percentAmount = (data.items.length / data.totalMonth) * 100;
+        const percentAmount = Math.round((data.items.length / data.totalMonth) * 100);
         if (percentAmount > 0) {
             return (
                 <div className="progress-wrapper" style={{ width: '80%' }}>
@@ -55,9 +67,89 @@ function Installment({ data }) {
         }
     };
 
+    const arr = [
+        {
+            icon: <TbNumber1 />,
+            color: '#2196f3',
+        },
+        {
+            icon: <TbNumber2 />,
+            color: '#8b7e74',
+        },
+        {
+            icon: <TbNumber3 />,
+            color: '#10cc52',
+        },
+        {
+            icon: <TbNumber4 />,
+            color: '#596FFF',
+        },
+        {
+            icon: <TbNumber5 />,
+            color: '#ff8980',
+        },
+        {
+            icon: <TbNumber6 />,
+            color: '#acb7ff',
+        },
+        {
+            icon: <TbNumber7 />,
+            color: '#3eb489',
+        },
+        {
+            icon: <TbNumber8 />,
+            color: '#ff8980',
+        },
+        {
+            icon: <TbNumber9 />,
+            color: '#8b7e74',
+        },
+        {
+            icon: (
+                <Row style={{ marginRight: '0' }}>
+                    <TbNumber1 />
+                    <TbNumber0 />
+                </Row>
+            ),
+            color: '#596fff ',
+        },
+        {
+            icon: (
+                <Row style={{ marginRight: '0' }}>
+                    <TbNumber1 />
+                    <TbNumber1 />
+                </Row>
+            ),
+            color: '#eace77',
+        },
+        {
+            icon: (
+                <Row style={{ marginRight: '0' }}>
+                    <TbNumber1 />
+                    <TbNumber2 />
+                </Row>
+            ),
+            color: '#2aa6b7',
+        },
+    ];
+    const handleRenderElement = (data) => {
+        const color = arr[data.month - 1].color;
+        return (
+            <VerticalTimelineElement
+                key={data.month}
+                contentStyle={{ background: color, color: '#fff' }}
+                contentArrowStyle={{ borderRight: `7px solid  ${color}` }}
+                iconStyle={{ background: color, color: '#fff' }}
+                iconClassName={cx('icon-custom')}
+                icon={arr[data.month - 1].icon}
+            >
+                <span>{vnd.format(data.amount)}</span>
+            </VerticalTimelineElement>
+        );
+    };
     return (
         <>
-            <Card className={cx('card-custom')}>
+            <Card className={cx('card-custom')} onClick={() => setShowModal(true)}>
                 <CardBody>
                     <Row className="justify-content-center pb-4">
                         <div
@@ -85,7 +177,9 @@ function Installment({ data }) {
                         </Col>
                         <Col xl="6">
                             <Row className="justify-content-center">
-                                <span style={{ fontWeight: '700' }}>{vnd.format(sumBy(data.items, 'amount'))}</span>
+                                <span style={{ fontWeight: '700' }}>
+                                    {vnd.format(sumBy(data.items, (item) => Number(item.amount)))}
+                                </span>
                             </Row>
                             <Row className="justify-content-center">
                                 <p className="text-muted">Tổng tiền</p>
@@ -94,7 +188,12 @@ function Installment({ data }) {
                     </Row>
                 </CardBody>
             </Card>
-            <Modal className="modal-dialog-centered" isOpen={showModal} toggle={() => setShowModal((state) => !state)}>
+            <Modal
+                size="lg"
+                className="modal-dialog-centered"
+                isOpen={showModal}
+                toggle={() => setShowModal((state) => !state)}
+            >
                 <div className="modal-header">
                     <h5 className="modal-title" id="exampleModalLabel">
                         Đóng tiền trả góp
@@ -135,9 +234,9 @@ function Installment({ data }) {
                         </Col>
                     </Row>
                     <Row>
-                        {/* {data.items.map((item, index) => (
-                            <TrelloDetail key={index} data={item} />
-                        ))} */}
+                        <VerticalTimeline lineColor={data.items.length > 0 ? '#525f7f' : '#fff'}>
+                            {data.items.map((item) => handleRenderElement(item))}
+                        </VerticalTimeline>
                     </Row>
                 </div>
                 <div className="modal-footer">
@@ -145,7 +244,14 @@ function Installment({ data }) {
                         color="primary"
                         type="button"
                         disabled={disabled}
-                        onClick={() => dispatch(addThangTragop({ currentYear, amount, data }))}
+                        onClick={() => {
+                            dispatch(addThangTragop({ currentYear, amount, data })).then((data) => {
+                                if (data.meta.requestStatus === 'fulfilled') {
+                                    handleLoad(data.payload);
+                                    setDisabled(true);
+                                }
+                            });
+                        }}
                     >
                         Thêm mới
                     </Button>

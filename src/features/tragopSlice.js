@@ -37,7 +37,6 @@ export const getAllTragop = createAsyncThunk('tragop/getAll', async (product, th
 
 export const addTragop = createAsyncThunk('tragop/add', async (product, thunkAPI) => {
     try {
-        const newDate = moment(product.currentDate).format('YYYYMMDD');
         const obj = {
             title: product.title,
             amountMonth: product.amount,
@@ -45,7 +44,6 @@ export const addTragop = createAsyncThunk('tragop/add', async (product, thunkAPI
             items: [],
         };
 
-        // const objRef = doc(collection(db, 'tragop'));
         const objRef = await addDoc(collection(db, 'tragop'), obj);
         return {
             ...obj,
@@ -58,7 +56,6 @@ export const addTragop = createAsyncThunk('tragop/add', async (product, thunkAPI
 
 export const addThangTragop = createAsyncThunk('tragop/addMonth', async (product, thunkAPI) => {
     try {
-        console.log(product);
         const year = moment(product.currentYear, 'YYYY/MM/DD').format('YYYY');
         const month = moment(product.currentYear, 'YYYY/MM/DD').format('M');
         const obj = {
