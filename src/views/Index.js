@@ -1,11 +1,7 @@
-import { useState } from 'react';
-// node.js library that concatenates classes (strings)
+import { useEffect, useState } from 'react';
 import classnames from 'classnames';
-// javascipt plugin for creating charts
 import Chart from 'chart.js';
-// react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
-// reactstrap components
 import {
     Button,
     Card,
@@ -21,23 +17,81 @@ import {
     Col,
 } from 'reactstrap';
 
-// core components
-import { chartOptions, parseOptions, chartExample1, chartExample2 } from 'variables/charts.js';
+import { chartOptions, parseOptions, chartExample2 } from 'variables/charts.js';
+import { chartData } from 'variables/dataCharts.js';
+import moment from 'moment';
 
 import Header from 'components/Headers/Header.js';
+import { useSelector } from 'react-redux';
+import { find, flatMap, get, partition, remove, sumBy } from 'lodash';
 
 const Index = (props) => {
+    const { allWeek, isLoadingAll } = useSelector((state) => state.data);
     const [activeNav, setActiveNav] = useState(1);
-    const [chartExample1Data, setChartExample1Data] = useState('data1');
-
+    const [dataChart, setDataChart] = useState({
+        labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+        datasets: [
+            {
+                label: 'Performance',
+                data: [0, 0, 0, 0, 0, 0, 0],
+            },
+        ],
+    });
     if (window.Chart) {
         parseOptions(Chart, chartOptions());
     }
-
     const toggleNavs = (e, index) => {
         e.preventDefault();
         setActiveNav(index);
-        setChartExample1Data('data' + index);
+    };
+    useEffect(() => {
+        const startOfWeek = moment().startOf('isoWeek');
+        const endOfWeek = moment().endOf('isoWeek');
+
+        let days = [];
+        let day = startOfWeek;
+        let arrData = [];
+        while (day <= endOfWeek) {
+            days.push(day.toDate());
+            day = day.clone().add(1, 'd');
+        }
+
+        days.map((item) => {
+            const finder = find(allWeek, { createDate: moment(item).format('YYYYMMDD') });
+            if (finder !== undefined) {
+                console.log(
+                    remove(finder.items, function (currentObject) {
+                        return currentObject.kind === 'Thu';
+                    }),
+                );
+                return arrData.push(
+                    sumBy(finder.items, function (o) {
+                        return Number(o.amount);
+                    }),
+                );
+            } else {
+                arrData.push(0);
+            }
+            return true;
+        });
+        setDataChart({
+            labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+            datasets: [
+                {
+                    label: 'Performance',
+                    data: arrData,
+                },
+            ],
+        });
+    }, [isLoadingAll]);
+    const data = {
+        labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+        datasets: [
+            {
+                label: 'Performance',
+                data: [0, 20, 10, 30, 15, 40, 20],
+            },
+        ],
     };
     return (
         <>
@@ -50,23 +104,11 @@ const Index = (props) => {
                             <CardHeader className="bg-transparent">
                                 <Row className="align-items-center">
                                     <div className="col">
-                                        <h6 className="text-uppercase text-light ls-1 mb-1">Overview</h6>
-                                        <h2 className="text-white mb-0">Sales value</h2>
+                                        <h6 className="text-uppercase text-light ls-1 mb-1">Tổng quan</h6>
+                                        <h2 className="text-white mb-0">Số tiền đã chi</h2>
                                     </div>
                                     <div className="col">
                                         <Nav className="justify-content-end" pills>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={classnames('py-2 px-3', {
-                                                        active: activeNav === 1,
-                                                    })}
-                                                    href="#pablo"
-                                                    onClick={(e) => toggleNavs(e, 1)}
-                                                >
-                                                    <span className="d-none d-md-block">Month</span>
-                                                    <span className="d-md-none">M</span>
-                                                </NavLink>
-                                            </NavItem>
                                             <NavItem>
                                                 <NavLink
                                                     className={classnames('py-2 px-3', {
@@ -76,7 +118,7 @@ const Index = (props) => {
                                                     href="#pablo"
                                                     onClick={(e) => toggleNavs(e, 2)}
                                                 >
-                                                    <span className="d-none d-md-block">Week</span>
+                                                    <span className="d-none d-md-block">Tuần</span>
                                                     <span className="d-md-none">W</span>
                                                 </NavLink>
                                             </NavItem>
@@ -88,8 +130,8 @@ const Index = (props) => {
                                 {/* Chart */}
                                 <div className="chart">
                                     <Line
-                                        data={chartExample1[chartExample1Data]}
-                                        options={chartExample1.options}
+                                        data={dataChart}
+                                        options={chartData.options}
                                         getDatasetAtEvent={(e) => console.log(e)}
                                     />
                                 </div>
@@ -101,8 +143,8 @@ const Index = (props) => {
                             <CardHeader className="bg-transparent">
                                 <Row className="align-items-center">
                                     <div className="col">
-                                        <h6 className="text-uppercase text-muted ls-1 mb-1">Performance</h6>
-                                        <h2 className="mb-0">Total orders</h2>
+                                        <h6 className="text-uppercase text-muted ls-1 mb-1">Tổng quan</h6>
+                                        <h2 className="mb-0">Số tiền đã thu</h2>
                                     </div>
                                 </Row>
                             </CardHeader>

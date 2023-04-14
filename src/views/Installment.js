@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react';
 import Header from 'components/Headers/Header';
-import { Button, Card, CardBody, Col, Container, FormGroup, Input, Modal, Row } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Container, FormGroup, Input, Modal, Row } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 import { getAllTragop, addTragop } from 'features/tragopSlice';
-import classnames from 'classnames/bind';
 
-import Trello from '../components/Trello.js';
-import TrelloDetail from 'components/TrelloDetail.js';
 import InstallmentNew from './InstallmentNew';
-import styles from './Installment.module.scss';
 import CurrencyInput from 'react-currency-input-field';
-
-const cx = classnames.bind(styles);
 function Installment() {
     const dispatch = useDispatch();
     const [disabled, setDisabled] = useState(true);

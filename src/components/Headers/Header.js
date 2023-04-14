@@ -1,4 +1,3 @@
-import { useEffect, useState, useMemo } from 'react';
 import { Card, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { BsCalendar2Date, BsCalendar2Month, BsCalendar2Week } from 'react-icons/bs';
@@ -6,7 +5,6 @@ import { flatMap, get, partition, sumBy } from 'lodash';
 
 import { vnd } from '../../Helpers/Index';
 import { Loading } from '../../assets/svg';
-import { isBreakStatement } from 'typescript';
 
 const Header = () => {
     const { allMonth, allWeek, allDailys, isLoadingAll } = useSelector((state) => state.data);

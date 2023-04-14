@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { sumBy } from 'lodash';
+import { sortBy, sumBy } from 'lodash';
 import { Button, Card, CardBody, Col, FormGroup, Input, Modal, Progress, Row } from 'reactstrap';
 import { BsFillHeartPulseFill } from 'react-icons/bs';
 import {
@@ -235,7 +235,7 @@ function Installment({ data, handleLoad = () => {} }) {
                     </Row>
                     <Row>
                         <VerticalTimeline lineColor={data.items.length > 0 ? '#525f7f' : '#fff'}>
-                            {data.items.map((item) => handleRenderElement(item))}
+                            {sortBy(data.items, ['month']).map((item) => handleRenderElement(item))}
                         </VerticalTimeline>
                     </Row>
                 </div>
