@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { sortBy, sumBy } from 'lodash';
+import { sumBy, orderBy } from 'lodash';
 import { Button, Card, CardBody, Col, FormGroup, Input, Modal, Progress, Row } from 'reactstrap';
 import { BsFillHeartPulseFill } from 'react-icons/bs';
 import {
@@ -42,6 +42,10 @@ function Installment({ data, handleLoad = () => {} }) {
     const calAmount = () => {
         const percentAmount = Math.round((data.items.length / data.totalMonth) * 100);
         if (percentAmount > 0) {
+            let color = 'danger';
+            if (percentAmount === 100) {
+                color = 'success';
+            }
             return (
                 <div className="progress-wrapper" style={{ width: '80%' }}>
                     <div className="progress-info">
@@ -52,7 +56,7 @@ function Installment({ data, handleLoad = () => {} }) {
                             <span>{percentAmount}%</span>
                         </div>
                     </div>
-                    <Progress max="100" value={percentAmount} color="info" />
+                    <Progress max="100" value={percentAmount} color={color} />
                 </div>
             );
         } else {
@@ -235,7 +239,13 @@ function Installment({ data, handleLoad = () => {} }) {
                     </Row>
                     <Row>
                         <VerticalTimeline lineColor={data.items.length > 0 ? '#525f7f' : '#fff'}>
-                            {sortBy(data.items, ['month']).map((item) => handleRenderElement(item))}
+                            {orderBy(
+                                data.items,
+                                (x) => {
+                                    return parseInt(x.month, 10);
+                                },
+                                ['desc'],
+                            ).map((item) => handleRenderElement(item))}
                         </VerticalTimeline>
                     </Row>
                 </div>

@@ -23,7 +23,7 @@ import moment from 'moment';
 
 import Header from 'components/Headers/Header.js';
 import { useSelector } from 'react-redux';
-import { find, flatMap, get, partition, remove, sumBy } from 'lodash';
+import { filter, find, sumBy } from 'lodash';
 
 const Index = (props) => {
     const { allWeek, isLoadingAll } = useSelector((state) => state.data);
@@ -59,13 +59,9 @@ const Index = (props) => {
         days.map((item) => {
             const finder = find(allWeek, { createDate: moment(item).format('YYYYMMDD') });
             if (finder !== undefined) {
-                console.log(
-                    remove(finder.items, function (currentObject) {
-                        return currentObject.kind === 'Thu';
-                    }),
-                );
+                const loaiThu = filter(finder.items, { kind: 'Chi' });
                 return arrData.push(
-                    sumBy(finder.items, function (o) {
+                    sumBy(loaiThu, function (o) {
                         return Number(o.amount);
                     }),
                 );
@@ -144,15 +140,12 @@ const Index = (props) => {
                                 <Row className="align-items-center">
                                     <div className="col">
                                         <h6 className="text-uppercase text-muted ls-1 mb-1">Tổng quan</h6>
-                                        <h2 className="mb-0">Số tiền đã thu</h2>
+                                        <h2 className="mb-0">Số tiền đang có</h2>
                                     </div>
                                 </Row>
                             </CardHeader>
                             <CardBody>
-                                {/* Chart */}
-                                <div className="chart">
-                                    <Bar data={chartExample2.data} options={chartExample2.options} />
-                                </div>
+                                <div className="chart"></div>
                             </CardBody>
                         </Card>
                     </Col>
