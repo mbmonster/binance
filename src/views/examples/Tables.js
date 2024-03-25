@@ -38,7 +38,6 @@ import {
 // core components
 import Header from 'components/Headers/Header.js';
 // Default theme
-import '@splidejs/react-splide/css';
 const Tables = () => {
     return (
         <>

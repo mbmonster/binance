@@ -81,6 +81,7 @@ export const addDaily = createAsyncThunk('daily/add', async (product, thunkAPI) 
                     kind: product.kind,
                     createDate: newDatetime,
                     parentId: newDate,
+                    typeAmount: product.typeAmount,
                 },
             ],
         };
@@ -98,6 +99,7 @@ export const addDaily = createAsyncThunk('daily/add', async (product, thunkAPI) 
                     kind: product.kind,
                     createDate: newDatetime,
                     parentId: newDate,
+                    typeAmount: product.typeAmount,
                 }),
             });
         }
@@ -134,6 +136,7 @@ export const deleteDaily = createAsyncThunk('daily/delete', async (product, thun
             kind: product.kind,
             type: product.type,
             parentId: product.parentId,
+            typeAmount: product.typeAmount,
         };
         await updateDoc(docRef, {
             items: arrayRemove(obj),

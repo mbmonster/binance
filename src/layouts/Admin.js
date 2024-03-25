@@ -34,7 +34,7 @@ const Admin = ({ children }) => {
             //     return routes[i].name;
             // }
         }
-        return 'Brand';
+        return 'Ngọc Hòa';
     };
 
     return (
