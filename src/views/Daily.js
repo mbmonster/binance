@@ -46,7 +46,6 @@ function Daily() {
         } else {
             setBtnAdd(false);
         }
-        console.log(amount);
     }, [type, amount, kind, currentDate]);
 
     const handleChangeDate = (e) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sumBy, orderBy } from 'lodash';
 import { Button, Card, CardBody, Col, FormGroup, Input, Modal, Progress, Row } from 'reactstrap';
-import { BsFillHeartPulseFill } from 'react-icons/bs';
+import { BsPiggyBankFill } from 'react-icons/bs';
 import {
     TbNumber0,
     TbNumber1,
@@ -160,7 +160,7 @@ function Installment({ data, handleLoad = () => {} }) {
                             className="icon-shape text-white rounded-circle shadow"
                             style={{ width: '7rem', height: '7rem', fontWeight: '700', backgroundColor: '#43aaa0' }}
                         >
-                            <BsFillHeartPulseFill />
+                            <BsPiggyBankFill />
                         </div>
                     </Row>
                     <Row className="justify-content-center">
@@ -186,7 +186,19 @@ function Installment({ data, handleLoad = () => {} }) {
                                 </span>
                             </Row>
                             <Row className="justify-content-center">
-                                <p className="text-muted">Tổng tiền</p>
+                                <p className="text-muted">Đã đóng</p>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="justify-content-center mt-2">
+                        <Col xl="12">
+                            <Row className="justify-content-center">
+                                <span className="text-muted">Cần đóng</span>
+                            </Row>
+                            <Row className="justify-content-center">
+                                <span style={{ fontWeight: '700' }}>
+                                    {vnd.format(data.totalMonth * data.amountMonth)}
+                                </span>
                             </Row>
                         </Col>
                     </Row>
